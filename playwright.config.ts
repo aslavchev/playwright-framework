@@ -33,18 +33,15 @@ export default defineConfig({
   /* Configure projects for major browsers */
   projects: [
     {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
-    },
-
-    {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
-    },
-
-    {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
+      name: 'api',
+      use: { 
+        baseURL: process.env.URL,
+        extraHTTPHeaders: {
+          Authorization: `Bearer ${process.env.TOKEN}`,
+          Accept: 'application/vnd.github.v3+json',
+        }
+      },
+      testMatch: /.*\.api\.spec\.ts/,
     },
   ],
 });
