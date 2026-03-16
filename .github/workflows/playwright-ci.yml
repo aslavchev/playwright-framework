@@ -44,6 +44,7 @@ jobs:
         uses: ./.github/actions/playwright-report
         with:
           test-step-outcome: ${{ steps.smoke.outcome }}
+          blob-report-upload: 'true'
 
   regression-test:
     name: Regression Test
@@ -66,6 +67,7 @@ jobs:
         uses: ./.github/actions/playwright-report
         with:
           test-step-outcome: ${{ steps.regression.outcome }}
+          blob-report-upload: 'true'
 
   merge-report:
     name: Merge Report
