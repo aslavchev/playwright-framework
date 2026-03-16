@@ -24,8 +24,23 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  lint:
+    name: Lint
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Playwright Setup on Runner
+        uses: ./.github/actions/playwright-setup
+
+      - name: Run ESLint
+        run: npm run lint
+
   smoke-test:
     name: Smoke Test
+    needs: lint
     timeout-minutes: 10
     runs-on: ubuntu-latest
     steps:
