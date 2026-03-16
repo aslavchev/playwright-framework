@@ -16,12 +16,12 @@ import type { APIRequestContext, APIResponse } from '@playwright/test';
  *    - `body`: The parsed JSON response body from the server.
  */
 export async function apiRequest({
-    request, 
+    request,
     method,
     url,
     baseUrl,
     body = null,
-    headers,   
+    headers,
 }: {
     request: APIRequestContext;
     method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
@@ -29,18 +29,18 @@ export async function apiRequest({
     baseUrl?: string;
     body?: Record<string, unknown> | null;
     headers?: Record<string, string>;
-}): Promise<{status: number; body: unknown}> {
+}): Promise<{ status: number; body: unknown }> {
     let response: APIResponse;
     const options: {
         data?: Record<string, unknown>;
         headers?: Record<string, string>;
     } = {};
 
-    if(body) options.data = body;
-    if(headers) {
-        options.headers = {... headers, 'Content-Type': 'application/json'}
+    if (body) options.data = body;
+    if (headers) {
+        options.headers = { ...headers, 'Content-Type': 'application/json' };
     } else {
-        options.headers = { 'Content-Type': 'application/json'};
+        options.headers = { 'Content-Type': 'application/json' };
     }
 
     const fullUrl = baseUrl ? `${baseUrl}${url}` : url;
@@ -77,7 +77,9 @@ export async function apiRequest({
             bodyData = await response.text();
         }
     } catch (err) {
-        console.warn(`Failed to parse response body for status ${status}: ${err}`);
+        console.warn(
+            `Failed to parse response body for status ${status}: ${err}`
+        );
     }
 
     return { status, body: bodyData };

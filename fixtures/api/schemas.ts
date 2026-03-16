@@ -11,7 +11,7 @@ export const UserSchema = z.object({
     bio: z.string().nullable(),
     public_repos: z.number(),
     followers: z.number(),
-    following: z.number()
+    following: z.number(),
 });
 
 /** Schema for a GitHub repository response (GET /repos/{owner}/{repo}). */
@@ -40,10 +40,12 @@ export const IssueSchema = z.object({
         login: z.string(),
         id: z.number(),
     }),
-    labels: z.array(z.object({
-        name: z.string(),
-        color: z.string(),
-    })),
+    labels: z.array(
+        z.object({
+            name: z.string(),
+            color: z.string(),
+        })
+    ),
 });
 
 /** Schema for a GitHub label response (GET/POST /repos/{owner}/{repo}/labels). */
