@@ -71,7 +71,7 @@ test.describe('Issues API', () => {
 
     test.afterAll(async ({ request }) => {
         if (issueNumber) {
-            await request.patch(`${process.env.URL}${repoPath}/${issueNumber}`, {
+            await request.patch(`${process.env.API_URL}${repoPath}/${issueNumber}`, {
                 headers: {
                     Authorization: `Bearer ${process.env.TOKEN}`,
                     Accept: 'application/vnd.github.v3+json',

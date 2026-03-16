@@ -10,6 +10,9 @@ on:
 env:
   API_URL: ${{ secrets.API_URL }}
   TOKEN: ${{ secrets.TOKEN }}
+  USER_NAME: aslavchev
+  REPO_NAME: playwright-framework
+  INVALID_TOKEN: invalidToken_asdaqw123
 
 permissions:
   contents: read

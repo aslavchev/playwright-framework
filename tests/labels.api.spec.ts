@@ -72,7 +72,7 @@ test.describe('Labels API', () => {
 
     test.afterAll(async ({ request }) => {
         if (labelName) {
-            await request.delete(`${process.env.URL}${repoPath}/${labelName}`, {
+            await request.delete(`${process.env.API_URL}${repoPath}/${labelName}`, {
                 headers: {
                     Authorization: `Bearer ${process.env.TOKEN}`,
                     Accept: 'application/vnd.github.v3+json',
