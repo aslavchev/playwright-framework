@@ -46,7 +46,7 @@ const config = [
                 'error',
                 { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
             ],
-            'no-console': ['error', { allow: ['warn', 'error'] }],
+            'no-console': 'error',
             'prefer-const': 'error',
             '@typescript-eslint/no-inferrable-types': 'error',
             '@typescript-eslint/no-empty-function': 'error',

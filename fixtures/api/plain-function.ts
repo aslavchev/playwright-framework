@@ -77,6 +77,7 @@ export async function apiRequest({
             bodyData = await response.text();
         }
     } catch (err) {
+        // eslint-disable-next-line no-console
         console.warn(
             `Failed to parse response body for status ${status}: ${err}`
         );
