@@ -69,11 +69,20 @@ tests/
     playwright-report/       # Composite: blob report upload
 ```
 
+## Docker
+
+```bash
+cp env/.env.example env/.env.dev   # add your GitHub PAT
+docker compose up --build          # build and run all tests
+```
+
+Reports are mapped to your host via volumes — open `playwright-report/index.html` after the run.
+
 ## Linting
 
 ESLint + Prettier enforced via Husky pre-commit hook. Key rules:
 
-- `no-console` (warn/error allowed)
+- `no-console` (inline exceptions only)
 - `explicit-function-return-type`
 - `no-floating-promises`
 - `playwright/missing-playwright-await`

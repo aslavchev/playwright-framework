@@ -1,0 +1,8 @@
+services:
+  tests:
+    build: .
+    env_file:
+      - env/.env.dev
+    volumes:
+      - ./playwright-report:/app/playwright-report
+      - ./test-results:/app/test-results
