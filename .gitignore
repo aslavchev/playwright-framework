@@ -8,3 +8,6 @@ node_modules/
 /playwright/.auth/
 env/.env.*
 !env/.env.example
+
+# Internal
+docs/review-log.md

@@ -62,6 +62,9 @@ tests/
   issues.api.spec.ts         # CRUD /repos/{owner}/{repo}/issues
   labels.api.spec.ts         # CRUD /repos/{owner}/{repo}/labels
   search.api.spec.ts         # GET /search/repositories
+docs/
+  adr/ADR-001-playwright-typescript.md  # Why Playwright + TypeScript
+  APPROACH.md                           # How the framework was built (credits Ivan Davidov)
 .github/
   workflows/playwright-ci.yml
   actions/
