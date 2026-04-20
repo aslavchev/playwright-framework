@@ -21,7 +21,8 @@
         "*.mts",
         "tests/**/*.ts",
         "fixtures/**/*.ts",
-        "pages/**/*.ts"
+        "pages/**/*.ts",
+        "test-data/**/*.ts"
     ],
     "exclude": ["node_modules", "dist", "playwright-report", "test-results"]
 }
