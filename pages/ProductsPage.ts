@@ -23,7 +23,7 @@ export class ProductsPage {
      * Adds a product to the cart by its visible name.
      * @param {string} productName - The exact product name as displayed on the page.
      */
-    async addToCart(productName: string): Promise<void> {
+    async addToCartOnProductsPage(productName: string): Promise<void> {
         await this.page
             .getByTestId('inventory-item')
             .filter({ hasText: productName })
@@ -35,12 +35,15 @@ export class ProductsPage {
      * Removes a product from the cart by its visible name.
      * @param {string} productName - The exact product name as displayed on the page.
      */
-    async removeFromCart(productName: string): Promise<void> {
-        await this.page
+    removeItemFromCartButtonOnProductsPage(productName: string): Locator {
+        return this.page
             .getByTestId('inventory-item')
             .filter({ hasText: productName })
-            .getByRole('button', { name: 'Remove' })
-            .click();
+            .getByRole('button', { name: 'Remove' });
+    }
+
+    async removeFromCartOnProductsPage(productName: string): Promise<void> {
+        await this.removeItemFromCartButtonOnProductsPage(productName).click();
     }
 
     /**
