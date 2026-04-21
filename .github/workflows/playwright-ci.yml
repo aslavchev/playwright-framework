@@ -1,149 +1,152 @@
 name: Playwright CI
 
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
-  workflow_dispatch:
+    push:
+        branches: [main]
+    pull_request:
+        branches: [main]
+    workflow_dispatch:
 
 env:
-  API_URL: ${{ secrets.API_URL }}
-  TOKEN: ${{ secrets.TOKEN }}
-  USER_NAME: aslavchev
-  REPO_NAME: playwright-framework
-  INVALID_TOKEN: invalidToken_asdaqw123
+    API_URL: ${{ secrets.API_URL }}
+    TOKEN: ${{ secrets.TOKEN }}
+    USER_NAME: aslavchev
+    REPO_NAME: playwright-framework
+    INVALID_TOKEN: invalidToken_asdaqw123
+    UI_URL: ${{ secrets.UI_URL }}
+    SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
+    SAUCE_PASSWORD: ${{ secrets.SAUCE_PASSWORD }}
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+    contents: read
+    pages: write
+    id-token: write
 
 concurrency:
-  group: "pages"
-  cancel-in-progress: false
+    group: 'pages'
+    cancel-in-progress: false
 
 jobs:
-  lint:
-    name: Lint
-    timeout-minutes: 5
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+    lint:
+        name: Lint
+        timeout-minutes: 5
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v6
 
-      - name: Playwright Setup on Runner
-        uses: ./.github/actions/playwright-setup
+            - name: Playwright Setup on Runner
+              uses: ./.github/actions/playwright-setup
 
-      - name: Run ESLint
-        run: npm run lint
+            - name: Run ESLint
+              run: npm run lint
 
-  smoke-test:
-    name: Smoke Test
-    needs: lint
-    timeout-minutes: 10
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+    smoke-test:
+        name: Smoke Test
+        needs: lint
+        timeout-minutes: 10
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v6
 
-      - name: Playwright Setup on Runner
-        uses: ./.github/actions/playwright-setup
+            - name: Playwright Setup on Runner
+              uses: ./.github/actions/playwright-setup
 
-      - name: Run Smoke tests
-        id: smoke
-        run: npm run smoke
+            - name: Run Smoke tests
+              id: smoke
+              run: npm run smoke
 
-      - name: Upload Playwright Report
+            - name: Upload Playwright Report
+              if: always()
+              uses: ./.github/actions/playwright-report
+              with:
+                  test-step-outcome: ${{ steps.smoke.outcome }}
+                  blob-report-upload: 'true'
+
+    regression-test:
+        name: Regression Test
+        needs: smoke-test
+        timeout-minutes: 10
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v6
+
+            - name: Playwright Setup on Runner
+              uses: ./.github/actions/playwright-setup
+
+            - name: Run Regression tests
+              id: regression
+              run: npm run regression
+
+            - name: Upload Playwright Report
+              if: always()
+              uses: ./.github/actions/playwright-report
+              with:
+                  test-step-outcome: ${{ steps.regression.outcome }}
+                  blob-report-upload: 'true'
+
+    merge-report:
+        name: Merge Report
         if: always()
-        uses: ./.github/actions/playwright-report
-        with:
-          test-step-outcome: ${{ steps.smoke.outcome }}
-          blob-report-upload: 'true'
+        needs: [smoke-test, regression-test]
+        timeout-minutes: 10
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v6
 
-  regression-test:
-    name: Regression Test
-    needs: smoke-test
-    timeout-minutes: 10
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+            - name: Setup Node.js
+              uses: actions/setup-node@v6
+              with:
+                  node-version: lts/*
 
-      - name: Playwright Setup on Runner
-        uses: ./.github/actions/playwright-setup
+            - name: Install Dependencies
+              run: npm ci
 
-      - name: Run Regression tests
-        id: regression
-        run: npm run regression
+            - name: Download blob reports
+              uses: actions/download-artifact@v8
+              with:
+                  path: all-blob-reports
+                  pattern: blob-report-*
+                  merge-multiple: true
 
-      - name: Upload Playwright Report
+            - name: Merge into HTML Report
+              run: npx playwright merge-reports --reporter html ./all-blob-reports
+
+            - name: Upload HTML report
+              uses: actions/upload-artifact@v7
+              with:
+                  name: Merged HTML Reports
+                  path: playwright-report
+                  retention-days: 3
+
+    build-report:
+        name: Build Report
         if: always()
-        uses: ./.github/actions/playwright-report
-        with:
-          test-step-outcome: ${{ steps.regression.outcome }}
-          blob-report-upload: 'true'
+        needs: merge-report
+        runs-on: ubuntu-latest
+        steps:
+            - name: Download Merged HTML Reports
+              uses: actions/download-artifact@v8
+              with:
+                  name: Merged HTML Reports
+                  path: ./_site
 
-  merge-report:
-    name: Merge Report
-    if: always()
-    needs: [smoke-test, regression-test]
-    timeout-minutes: 10
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+            - name: Upload artifact
+              uses: actions/upload-pages-artifact@v5
+              with:
+                  path: ./_site
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: lts/*
-
-      - name: Install Dependencies
-        run: npm ci
-
-      - name: Download blob reports
-        uses: actions/download-artifact@v4
-        with:
-          path: all-blob-reports
-          pattern: blob-report-*
-          merge-multiple: true
-
-      - name: Merge into HTML Report
-        run: npx playwright merge-reports --reporter html ./all-blob-reports
-
-      - name: Upload HTML report
-        uses: actions/upload-artifact@v4
-        with:
-          name: Merged HTML Reports
-          path: playwright-report
-          retention-days: 3
-
-  build-report:
-    name: Build Report
-    if: always()
-    needs: merge-report
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download Merged HTML Reports
-        uses: actions/download-artifact@v4
-        with:
-          name: Merged HTML Reports
-          path: ./_site
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: ./_site
-
-  deploy-report:
-    name: Deploy report
-    if: always()
-    needs: build-report
-    environment:
-      name: github-pages
-      url: "https://aslavchev.github.io/playwright-framework/"
-    runs-on: ubuntu-latest
-    steps:
-      - name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@v4
+    deploy-report:
+        name: Deploy report
+        if: always()
+        needs: build-report
+        environment:
+            name: github-pages
+            url: 'https://aslavchev.github.io/playwright-framework/'
+        runs-on: ubuntu-latest
+        steps:
+            - name: Deploy to GitHub Pages
+              uses: actions/deploy-pages@v5

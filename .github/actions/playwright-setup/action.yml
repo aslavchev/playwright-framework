@@ -13,14 +13,14 @@ runs:
   using: 'composite'
   steps:
     - name: Setup Node
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@v6
       with:
         node-version: lts/*
 
     - name: Cache Dependencies
       if: inputs.caching-dependencies == 'true'
       id: cache-dependencies
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: node_modules
         key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
@@ -33,7 +33,7 @@ runs:
     - name: Cache Playwright Browsers
       if: inputs.caching-browsers == 'true'
       id: cache-browsers
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: ~/.cache/ms-playwright
         key: playwright-browsers-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
