@@ -113,7 +113,7 @@ test.describe('Products', () => {
         { tag: ['@regression', '@ui'] },
         async ({ productsPage }) => {
             await test.step('add product to cart', async () => {
-                await productsPage.addToCartOnProductsPage(Products.BACKPACK);
+                await productsPage.addToCart(Products.BACKPACK);
             });
 
             await test.step('verify the badge displays 1', async () => {
@@ -127,13 +127,11 @@ test.describe('Products', () => {
         { tag: ['@regression', '@ui'] },
         async ({ productsPage }) => {
             await test.step('add product to cart', async () => {
-                await productsPage.addToCartOnProductsPage(Products.BACKPACK);
+                await productsPage.addToCart(Products.BACKPACK);
             });
 
             await test.step('remove product from cart', async () => {
-                await productsPage.removeFromCartOnProductsPage(
-                    Products.BACKPACK
-                );
+                await productsPage.removeItemFromCart(Products.BACKPACK);
             });
 
             await test.step('verify cart badge is hidden', async () => {
@@ -142,20 +140,18 @@ test.describe('Products', () => {
         }
     );
 
-    // removeFromCartOnProductsPage filters by product name — correct item scoping is enforced at page object level
+    // removeItemFromCart filters by product name — correct item scoping is enforced at page object level
     test(
         'remove one of multiple products decrements badge',
         { tag: ['@regression', '@ui'] },
         async ({ productsPage }) => {
             await test.step('add two products to cart', async () => {
-                await productsPage.addToCartOnProductsPage(Products.BACKPACK);
-                await productsPage.addToCartOnProductsPage(Products.BIKE_LIGHT);
+                await productsPage.addToCart(Products.BACKPACK);
+                await productsPage.addToCart(Products.BIKE_LIGHT);
             });
 
             await test.step('remove one product', async () => {
-                await productsPage.removeFromCartOnProductsPage(
-                    Products.BACKPACK
-                );
+                await productsPage.removeItemFromCart(Products.BACKPACK);
             });
 
             await test.step('verify badge decrements to 1', async () => {
@@ -164,9 +160,7 @@ test.describe('Products', () => {
 
             await test.step('verify bike light remains in cart', async () => {
                 await expect(
-                    productsPage.removeItemFromCartButtonOnProductsPage(
-                        Products.BIKE_LIGHT
-                    )
+                    productsPage.removeItemFromCartButton(Products.BIKE_LIGHT)
                 ).toBeVisible();
             });
         }
