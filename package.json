@@ -6,6 +6,8 @@
   "scripts": {
     "smoke": "npx playwright test --grep @smoke",
     "regression": "npx playwright test --grep @regression",
+    "api": "npx playwright test --project=api",
+    "ui": "npx playwright test --project=ui-setup --project=chromium",
     "lint": "npx eslint .",
     "prepare": "husky"
   },

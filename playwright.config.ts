@@ -1,4 +1,4 @@
-import { defineConfig } from '@playwright/test';
+import { defineConfig, devices } from '@playwright/test';
 import dotenv from 'dotenv';
 
 const environmentPath = process.env.ENVIRONMENT
@@ -42,6 +42,25 @@ export default defineConfig({
                 },
             },
             testMatch: /.*\.api\.spec\.ts/,
+        },
+        {
+            name: 'ui-setup',
+            use: {
+                baseURL: process.env.UI_URL,
+            },
+            testMatch: /.*\.ui\.setup\.ts/,
+        },
+        {
+            name: 'chromium',
+            use: {
+                ...devices['Desktop Chrome'],
+                baseURL: process.env.UI_URL,
+                testIdAttribute: 'data-test',
+                storageState: '.auth/userSession.json',
+                screenshot: 'only-on-failure',
+            },
+            testMatch: /.*\.ui\.spec\.ts/,
+            dependencies: ['ui-setup'],
         },
     ],
 });
