@@ -11,8 +11,18 @@ export class CartPage {
         return this.page.getByTestId('checkout');
     }
 
+    get continueShoppingButton(): Locator {
+        return this.page.getByTestId('continue-shopping');
+    }
+
     async navigateToCartPage(): Promise<void> {
         await this.page.goto('/cart.html');
+    }
+
+    removeItemFromCartButton(productName: string): Locator {
+        return this.cartItems
+            .filter({ hasText: productName })
+            .getByRole('button', { name: 'Remove' });
     }
 
     /**
@@ -20,10 +30,7 @@ export class CartPage {
      * @param {string} productName - The exact product name as displayed on the page.
      */
     async removeItem(productName: string): Promise<void> {
-        await this.cartItems
-            .filter({ hasText: productName })
-            .getByRole('button', { name: 'Remove' })
-            .click();
+        await this.removeItemFromCartButton(productName).click();
     }
 
     /**
@@ -31,5 +38,12 @@ export class CartPage {
      */
     async proceedToCheckout(): Promise<void> {
         await this.checkoutButton.click();
+    }
+
+    /**
+     * Clicks the Continue Shopping button to return to the products page.
+     */
+    async continueShopping(): Promise<void> {
+        await this.continueShoppingButton.click();
     }
 }
