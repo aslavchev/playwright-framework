@@ -47,6 +47,7 @@ export default defineConfig({
             name: 'ui-setup',
             use: {
                 baseURL: process.env.UI_URL,
+                testIdAttribute: 'data-test',
             },
             testMatch: /.*\.ui\.setup\.ts/,
         },
