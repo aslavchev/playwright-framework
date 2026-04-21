@@ -9,6 +9,14 @@ dotenv.config({
     path: environmentPath,
 });
 
+const uiConfig = {
+    ...devices['Desktop Chrome'],
+    baseURL: process.env.UI_URL,
+    testIdAttribute: 'data-test',
+    storageState: '.auth/userSession.json',
+    screenshot: 'only-on-failure',
+} as const;
+
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
@@ -53,14 +61,14 @@ export default defineConfig({
         },
         {
             name: 'chromium',
-            use: {
-                ...devices['Desktop Chrome'],
-                baseURL: process.env.UI_URL,
-                testIdAttribute: 'data-test',
-                storageState: '.auth/userSession.json',
-                screenshot: 'only-on-failure',
-            },
+            use: uiConfig,
             testMatch: /.*\.ui\.spec\.ts/,
+            dependencies: ['ui-setup'],
+        },
+        {
+            name: 'e2e',
+            use: uiConfig,
+            testMatch: /.*\.e2e\.spec\.ts/,
             dependencies: ['ui-setup'],
         },
     ],

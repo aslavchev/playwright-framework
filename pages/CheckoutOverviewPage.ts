@@ -4,6 +4,10 @@ import { Page, Locator } from '@playwright/test';
 export class CheckoutOverviewPage {
     constructor(private page: Page) {}
 
+    get cartItemNames(): Locator {
+        return this.page.getByTestId('inventory-item-name');
+    }
+
     get finishButton(): Locator {
         return this.page.getByTestId('finish');
     }
