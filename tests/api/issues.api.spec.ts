@@ -1,6 +1,6 @@
-import { test } from '../fixtures/api/api-request-fixture';
+import { test } from '../../fixtures/api/api-request-fixture';
 import { expect } from '@playwright/test';
-import { IssueSchema } from '../fixtures/api/schemas';
+import { IssueSchema } from '../../fixtures/api/schemas';
 
 test.describe('Issues API', () => {
     const repoPath = `/repos/${process.env.USER_NAME}/${process.env.REPO_NAME}/issues`;

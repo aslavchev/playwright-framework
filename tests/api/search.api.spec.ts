@@ -1,6 +1,6 @@
-import { test } from '../fixtures/api/api-request-fixture';
+import { test } from '../../fixtures/api/api-request-fixture';
 import { expect } from '@playwright/test';
-import { SearchResultSchema } from '../fixtures/api/schemas';
+import { SearchResultSchema } from '../../fixtures/api/schemas';
 
 test.describe('Search API', () => {
     test(

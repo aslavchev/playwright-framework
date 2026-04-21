@@ -1,6 +1,6 @@
-import { test } from '../fixtures/api/api-request-fixture';
+import { test } from '../../fixtures/api/api-request-fixture';
 import { expect } from '@playwright/test';
-import { RepoSchema } from '../fixtures/api/schemas';
+import { RepoSchema } from '../../fixtures/api/schemas';
 
 test.describe('Repos API', () => {
     test(

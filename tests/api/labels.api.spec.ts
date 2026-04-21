@@ -1,6 +1,6 @@
-import { test } from '../fixtures/api/api-request-fixture';
+import { test } from '../../fixtures/api/api-request-fixture';
 import { expect } from '@playwright/test';
-import { LabelSchema } from '../fixtures/api/schemas';
+import { LabelSchema } from '../../fixtures/api/schemas';
 
 test.describe('Labels API', () => {
     const repoPath = `/repos/${process.env.USER_NAME}/${process.env.REPO_NAME}/labels`;
