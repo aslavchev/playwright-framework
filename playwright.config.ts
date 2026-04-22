@@ -66,7 +66,7 @@ export default defineConfig({
             dependencies: ['ui-setup'],
         },
         {
-            name: 'e2e',
+            name: 'ui-e2e',
             use: uiConfig,
             testMatch: /.*\.e2e\.spec\.ts/,
             dependencies: ['ui-setup'],

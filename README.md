@@ -28,15 +28,16 @@ Playwright + TypeScript framework covering API testing against the GitHub REST A
 ## Run locally
 
 ```bash
-npm ci
-npx playwright install chromium
-cp env/.env.example env/.env.dev   # add credentials
-npx playwright test                        # all tests
-npx playwright test --project=api          # API only
-npx playwright test --project=chromium --project=e2e  # UI only
-npx playwright test --grep @smoke          # smoke only
-npx playwright test --grep @regression     # regression only
-npx playwright show-report                 # open HTML report
+npm ci                                                # install dependencies
+npx playwright install chromium                       # download browser binary
+cp env/.env.example env/.env.dev                      # create local config (add credentials)
+npx playwright test                                   # all tests
+npm run api                                           # API only
+npm run ui                                            # UI only (chromium + ui-e2e)
+npm run ui-e2e                                        # UI end-to-end flows only
+npm run smoke                                         # smoke only
+npm run regression                                    # regression only
+npx playwright show-report                            # open HTML report
 ```
 
 ## Setup
