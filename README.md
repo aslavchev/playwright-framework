@@ -3,7 +3,9 @@
 [![Playwright CI](https://github.com/aslavchev/playwright-framework/actions/workflows/playwright-ci.yml/badge.svg)](https://github.com/aslavchev/playwright-framework/actions/workflows/playwright-ci.yml)
 [![HTML Report](https://img.shields.io/badge/report-github--pages-blue)](https://aslavchev.github.io/playwright-framework/)
 
-Playwright + TypeScript API test framework for the GitHub REST API.
+Playwright + TypeScript framework covering API testing against the GitHub REST API and UI testing against SauceDemo.
+
+## API Tests — GitHub REST API
 
 | Suite | Tests | Tag | Coverage |
 | --- | --- | --- | --- |
@@ -13,16 +15,28 @@ Playwright + TypeScript API test framework for the GitHub REST API.
 | Search | 2 | @regression | Keyword search, zero results |
 | Labels | 3 | @regression | CRUD lifecycle, duplicate label, non-existent label |
 
+## UI Tests — SauceDemo
+
+| Suite | Tests | Tag | Coverage |
+| --- | --- | --- | --- |
+| Login | 3 | @smoke / @regression | Successful login, locked user, invalid credentials |
+| Products | 9 | @smoke / @regression | Add to cart, remove, sort by price and name |
+| Cart | 5 | @smoke / @regression | Empty cart, add item, remove item, checkout, continue shopping |
+| Checkout | 3 | @regression | Missing first name, last name, postal code |
+| Checkout E2E | 1 | @smoke / @e2e | Full flow: add to cart → checkout → order confirmation |
+
 ## Run locally
 
 ```bash
 npm ci
 npx playwright install chromium
-cp env/.env.example env/.env.dev   # add your GitHub PAT
-npx playwright test                # all tests
-npx playwright test --grep @smoke  # smoke only
-npx playwright test --grep @regression  # regression only
-npx playwright show-report         # open HTML report
+cp env/.env.example env/.env.dev   # add credentials
+npx playwright test                        # all tests
+npx playwright test --project=api          # API only
+npx playwright test --project=chromium --project=e2e  # UI only
+npx playwright test --grep @smoke          # smoke only
+npx playwright test --grep @regression     # regression only
+npx playwright show-report                 # open HTML report
 ```
 
 ## Setup
@@ -35,9 +49,12 @@ USER_NAME=<your-github-username>
 TOKEN=<your-github-pat>
 INVALID_TOKEN=invalidToken_asdaqw123
 REPO_NAME=playwright-framework
+UI_URL=https://www.saucedemo.com
+SAUCE_USERNAME=<saucedemo-username>
+SAUCE_PASSWORD=<saucedemo-password>
 ```
 
-The token needs `repo` scope for issue and label CRUD tests.
+The GitHub token needs `repo` scope for issue and label CRUD tests.
 
 ## CI Pipeline
 
@@ -56,15 +73,37 @@ fixtures/
     plain-function.ts        # Generic HTTP helper with method dispatch
     schemas.ts               # Zod schemas for response validation
     types-guards.ts          # TypeScript types derived from Zod schemas
+  pom/
+    page-object-fixture.ts   # test.extend() — injects page objects
+    test-options.ts          # mergeTests() — single import for all tests
+pages/                       # Page objects — getter pattern, one class per page
+  LoginPage.ts
+  ProductsPage.ts
+  CartPage.ts
+  CheckoutInfoPage.ts
+  CheckoutOverviewPage.ts
+  CheckoutCompletePage.ts
+test-data/
+  users.ts                   # SauceDemo user credentials
+  customers.ts               # Checkout form data
+  products.ts                # Product name constants
 tests/
-  auth.api.spec.ts           # GET /user — token validation
-  repos.api.spec.ts          # GET /repos — repo lookup
-  issues.api.spec.ts         # CRUD /repos/{owner}/{repo}/issues
-  labels.api.spec.ts         # CRUD /repos/{owner}/{repo}/labels
-  search.api.spec.ts         # GET /search/repositories
+  api/
+    auth.api.spec.ts         # GET /user — token validation
+    repos.api.spec.ts        # GET /repos — repo lookup
+    issues.api.spec.ts       # CRUD /repos/{owner}/{repo}/issues
+    labels.api.spec.ts       # CRUD /repos/{owner}/{repo}/labels
+    search.api.spec.ts       # GET /search/repositories
+  ui/
+    login.ui.spec.ts         # Login page validation
+    products.ui.spec.ts      # Products page interactions
+    cart.ui.spec.ts          # Cart page interactions
+    checkout.ui.spec.ts      # Checkout info validation
+    checkout.e2e.spec.ts     # Full checkout flow
+    auth.ui.setup.ts         # Saves authenticated session via storageState
 docs/
   adr/ADR-001-playwright-typescript.md  # Why Playwright + TypeScript
-  APPROACH.md                           # How the framework was built (credits Ivan Davidov)
+  APPROACH.md                           # How the framework was built + UI decisions
 .github/
   workflows/playwright-ci.yml
   actions/
@@ -75,7 +114,7 @@ docs/
 ## Docker
 
 ```bash
-cp env/.env.example env/.env.dev   # add your GitHub PAT
+cp env/.env.example env/.env.dev   # add credentials
 docker compose up --build          # build and run all tests
 ```
 
