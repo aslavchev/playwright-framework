@@ -1,4 +1,5 @@
-FROM node:22-slim
+# Keep in sync with @playwright/test version in package.json
+FROM mcr.microsoft.com/playwright:v1.58.2-noble
 
 WORKDIR /app
 
